@@ -78,7 +78,10 @@
   </button>
 
   <div id="pesanan"></div>
-  <div id="halamanDetail" style="display:none">
+</div>
+
+<!-- Halaman detail harus di luar daftarPesanan -->
+<div id="halamanDetail" style="display:none">
   <h2>📋 Detail Pesanan</h2>
 
   <div id="isiDetail"></div>
@@ -87,10 +90,6 @@
     ← Kembali ke Daftar Pesanan
   </button>
 </div>
-</div>
-
-
-  </div>
 
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
@@ -172,7 +171,8 @@ function muatPesanan() {
       }
 
       snapshot.forEach((doc) => {
-        const data = doc.data();
+  const data = doc.data();
+  const idPesanan = doc.id;
 
         const kartu = document.createElement("div");
         kartu.style.cssText =
@@ -249,7 +249,7 @@ kartu.appendChild(tombolDetail);
           tombol.disabled = true;
           tombol.textContent = "Menyimpan...";
 
-          db.collection("orders").doc(doc.id)
+          db.collection("orders").doc(idPesanan)
             .update({
               status: statusBaru
             })
