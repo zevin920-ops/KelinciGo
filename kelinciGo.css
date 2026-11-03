@@ -340,3 +340,110 @@ footer {
   outline: 3px solid #168747;
   outline-offset: 4px;
 }
+
+/* LIQUID GLASS JUMLAH KERETA */
+.glass-quantity {
+  padding: 18px;
+  margin: 16px 0;
+  border-radius: 24px;
+
+  background: rgba(255, 255, 255, 0.55);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+
+  border: 1px solid rgba(255, 255, 255, 0.8);
+
+  box-shadow:
+    0 8px 30px rgba(0,  0, 0, 0.06),
+    inset 0 1px 1px rgba(255, 255, 255, 0.9);
+}
+
+.glass-quantity > label {
+  display: block;
+  margin-bottom: 14px;
+
+  font-size: 16px;
+  font-weight: 600;
+  color: #202820;
+}
+
+/* COUNTER */
+.glass-counter {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  padding: 8px;
+  border-radius: 50px;
+
+  background: rgba(255, 255, 255, 0.45);
+  border: 1px solid rgba(255, 255, 255, 0.8);
+
+  box-shadow:
+    inset 0 2px 8px rgba(0, 0, 0, 0.04),
+    0 4px 12px rgba(0, 0, 0, 0.04);
+}
+
+/* TOMBOL MINUS DAN PLUS */
+.glass-counter button {
+  width: 48px;
+  height: 48px;
+
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.9);
+
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+
+  color: #64706a;
+  font-size: 28px;
+  font-weight: 400;
+
+  box-shadow:
+    0 4px 12px rgba(0, 0, 0, 0.06),
+    inset 0 1px 2px rgba(255, 255, 255, 0.9);
+
+  cursor: pointer;
+
+  transition:
+    transform 0.2s ease,
+    background 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+/* PLUS HIJAU */
+.glass-counter button:last-child {
+  background: rgba(35, 190, 105, 0.18);
+  color: #13a45b;
+
+  border-color: rgba(40, 190, 110, 0.25);
+}
+
+/* EFEK SAAT DITEKAN */
+.glass-counter button:active {
+  transform: scale(0.92);
+}
+
+/* ANGKA */
+.glass-counter span {
+  font-size: 28px;
+  font-weight: 600;
+  color: #202820;
+
+  min-width: 40px;
+  text-align: center;
+}
+
+/* MOBILE */
+@media (max-width: 480px) {
+  .glass-quantity {
+    padding: 15px;
+    border-radius: 20px;
+  }
+
+  .glass-counter button {
+    width: 44px;
+    height: 44px;
+  }
+}
