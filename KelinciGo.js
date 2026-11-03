@@ -311,15 +311,6 @@ async function kirimPesanan() {
     batch.set(pesananRef, dataPesanan);
 
      batch.set(trackingRef, {
-  nama: dataPesanan.nama,
-  whatsapp: dataPesanan.whatsapp,
-  jemput: dataPesanan.jemput,
-  tujuan: dataPesanan.tujuan,
-  tanggal: dataPesanan.tanggal,
-  jam: dataPesanan.jam,
-  jumlahKereta: dataPesanan.jumlahKereta,
-  totalKapasitas: dataPesanan.totalKapasitas,
-  penumpang: dataPesanan.penumpang,
   status: statusAwal
 });
 
