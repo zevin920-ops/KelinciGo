@@ -1,152 +1,227 @@
+
 <!DOCTYPE html>
 <html lang="id">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport"
-    content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#168747">
+
   <title>KelinciGo - Charter Kereta Kelinci</title>
+
   <link rel="stylesheet" href="kelinciGo.css">
 </head>
+
 <body>
 
+  <!-- NAVBAR -->
   <header class="navbar">
     <div class="brand">
       <span class="logo">🐰</span>
       <span>KelinciGo</span>
     </div>
-    <button class="icon-btn" aria-label="Notifikasi">
+
+    <button class="icon-btn" type="button" aria-label="Notifikasi">
       🔔
     </button>
   </header>
 
   <main>
+
+    <!-- HERO -->
     <section class="hero">
       <span class="tag">🚂 Layanan Charter</span>
+
       <h1>Jalan-jalan jadi lebih menyenangkan!</h1>
+
       <p>
         Pesan kereta kelinci untuk acara,
         keluarga, dan perjalanan bersama.
       </p>
+
       <div class="train">🚂 🚃 🚃</div>
     </section>
 
+    <!-- INFORMASI -->
     <section class="info">
       <h2>Kenapa KelinciGo?</h2>
+
       <div class="info-grid">
+
         <div class="info-card">
           <span>👨‍👩‍👧‍👦</span>
           <h3>24 Orang</h3>
           <p>Kapasitas penumpang setiap kereta</p>
         </div>
+
         <div class="info-card">
           <span>📍</span>
           <h3>Fleksibel</h3>
           <p>Pilih rute sendiri</p>
         </div>
+
       </div>
     </section>
 
+    <!-- BOOKING -->
     <section class="booking">
+
       <h2>Siap untuk perjalanan?</h2>
-      <p>Pesan charter kereta kelinci sekarang.</p>
-      <button class="primary-btn"
-  onclick="bukaPesanan()">
-  Pesan Sekarang →
-</button>
 
+      <p>
+        Pesan charter kereta kelinci sekarang.
+      </p>
 
-<div id="formPesanan" class="booking-form">
-  <h2>Form Pemesanan</h2>
+      <!-- TOMBOL BUKA FORM -->
+      <button
+        type="button"
+        class="primary-btn"
+        id="btnBukaPesanan"
+        onclick="bukaPesanan()">
 
-  <input id="nama"
-    placeholder="Nama pelanggan">
+        Pesan Sekarang →
 
-  <input id="whatsapp"
-    type="tel"
-    placeholder="Nomor WhatsApp">
+      </button>
 
-  <input id="jemput"
-    placeholder="Lokasi penjemputan">
+      <!-- FORM PEMESANAN -->
+      <div id="formPesanan" class="booking-form">
 
-  <input id="tujuan"
-    placeholder="Tujuan perjalanan">
+        <h2>Form Pemesanan</h2>
 
-  <input id="tanggal"
-    type="date">
+        <input
+          id="nama"
+          type="text"
+          placeholder="Nama pelanggan"
+          maxlength="100">
 
-  <input id="jam"
-    type="time">
+        <input
+          id="whatsapp"
+          type="tel"
+          placeholder="Nomor WhatsApp"
+          maxlength="20">
 
-  <label for="jumlahKereta">
-    Jumlah Kereta
-  </label>
+        <input
+          id="jemput"
+          type="text"
+          placeholder="Lokasi penjemputan"
+          maxlength="200">
 
-  
-<div class="jumlah-kereta">
-  <label>Jumlah Kereta</label>
+        <input
+          id="tujuan"
+          type="text"
+          placeholder="Tujuan perjalanan"
+          maxlength="200">
 
-  <div class="pilih-kereta">
-    <button type="button" onclick="ubahKereta(-1)">−</button>
+        <label for="tanggal">Tanggal perjalanan</label>
 
-    <span id="jumlahKereta">1</span>
+        <input
+          id="tanggal"
+          type="date">
 
-    <button type="button" onclick="ubahKereta(1)">+</button>
-  </div>
+        <label for="jam">Jam perjalanan</label>
 
-  <p>
-    Kapasitas:
-    <strong id="totalKapasitas">24 penumpang</strong>
-  </p>
-</div>
-  
-  <div class="kapasitas-info">
-    <p>Kapasitas per kereta: <strong>24 penumpang</strong></p>
-    <p>Total kapasitas:
-      <strong id="totalKapasitas">24 penumpang</strong>
-    </p>
-  </div>
+        <input
+          id="jam"
+          type="time">
 
-  <input id="penumpang"
-    type="number"
-    min="1"
-    max="1200"
-    placeholder="Jumlah penumpang">
+        <!-- JUMLAH KERETA -->
+        <div class="jumlah-kereta">
 
-  <button class="primary-btn"
-    onclick="kirimPesanan()">
-    Kirim Pesanan
-  </button>
-</div>
+          <label>Jumlah Kereta</label>
 
-    <div id="hasilPesanan"></div>
-      
+          <div class="pilih-kereta">
+
+            <button
+              type="button"
+              onclick="ubahKereta(-1)">
+              −
+            </button>
+
+            <span id="jumlahKereta">1</span>
+
+            <button
+              type="button"
+              onclick="ubahKereta(1)">
+              +
+            </button>
+
+          </div>
+
+          <p>
+            Kapasitas per kereta:
+            <strong>24 penumpang</strong>
+          </p>
+
+          <p>
+            Total kapasitas:
+            <strong id="totalKapasitas">
+              24 penumpang
+            </strong>
+          </p>
+
+        </div>
+
+        <!-- JUMLAH PENUMPANG -->
+        <label for="penumpang">
+          Jumlah Penumpang
+        </label>
+
+        <input
+          id="penumpang"
+          type="number"
+          min="1"
+          max="1200"
+          placeholder="Jumlah penumpang">
+
+        <!-- KIRIM PESANAN -->
+        <button
+          type="button"
+          class="primary-btn"
+          onclick="kirimPesanan()">
+
+          Kirim Pesanan
+
+        </button>
+
+      </div>
+
+      <!-- HASIL PESANAN -->
+      <div id="hasilPesanan"></div>
+
     </section>
+
   </main>
 
+  <!-- FOOTER -->
   <footer>
     KelinciGo © 2026
-    <p>Booking & Charter Kereta Kelinci</p>
+
+    <p>
+      Booking & Charter Kereta Kelinci
+    </p>
   </footer>
 
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+  <!-- FIREBASE -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 
-<script>
-const firebaseConfig = {
-    apiKey: "AIzaSyB4y28SQw02BWQWGDIeqan7H-gEGUVOwkw",
-    authDomain: "kelincigo-465eb.firebaseapp.com",
-    projectId: "kelincigo-465eb",
-    storageBucket: "kelincigo-465eb.firebasestorage.app",
-    messagingSenderId: "214017970412",
-    appId: "1:214017970412:web:7db5858a5e92dbe90c15c9"
-  };
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 
-firebase.initializeApp(firebaseConfig);
-const db = firebase.firestore();
-</script>
-  
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyB4y28SQw02BWQWGDIeqan7H-gEGUVOwkw",
+      authDomain: "kelincigo-465eb.firebaseapp.com",
+      projectId: "kelincigo-465eb",
+      storageBucket: "kelincigo-465eb.firebasestorage.app",
+      messagingSenderId: "214017970412",
+      appId: "1:214017970412:web:7db5858a5e92dbe90c15c9"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+
+    const db = firebase.firestore();
+  </script>
+
+  <!-- JAVASCRIPT KELINCI GO -->
   <script src="KelinciGo.js"></script>
-  
+
 </body>
 </html>
