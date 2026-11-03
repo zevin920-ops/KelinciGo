@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Dashboard KelinciGo</title>
+
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f4f7f5;
+      color: #18352a;
+    }
+
+    header {
+      background: #166534;
+      color: white;
+      padding: 22px;
+    }
+
+    header h2 {
+      margin: 0;
+    }
+
+    header p {
+      margin-bottom: 0;
+      opacity: 0.85;
+    }
+
+    main {
+      padding: 18px;
+      max-width: 900px;
+      margin: auto;
+    }
+
+    .judul {
+      margin-bottom: 18px;
+    }
+
+    .kartu {
+      background: white;
+      padding: 20px;
+      border-radius: 18px;
+      margin-bottom: 15px;
+      box-shadow: 0 4px 15px #00008;
+    }
+
+    .angka {
+      font-size: 30px;
+      font-weight: bold;
+      margin: 12px 0 0;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+    }
+
+    button {
+      width: 100%;
+      padding: 14px;
+      border: 0;
+      border-radius: 12px;
+      background: #166534;
+      color: white;
+      font-weight: bold;
+      font-size: 15px;
+      margin-top: 10px;
+    }
+
+    .keluar {
+      background: #dc2626;
+    }
+
+    #loading {
+      text-align: center;
+      padding: 30px;
+    }
+
+    @media (min-width: 600px) {
+      .grid {
+        grid-template-columns: repeat(4, 1fr);
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <header>
+    <h2>🐰 KelinciGo</h2>
+    <p>Dashboard Admin</p>
+  </header>
+
+  <main>
+
+    <div class="judul">
+      <h2>Selamat datang, Admin!</h2>
+      <p>Ringkasan pesanan kereta kelinci.</p>
+    </div>
+
+    <div id="loading">Memuat dashboard...</div>
+
+    <div id="dashboard" style="display:none">
+
+      <div class="grid">
+
+        <div class="kartu">
+          <div>📋 Total Pesanan</div>
+          <div class="angka" id="total">0</div>
+        </div>
+
+        <div class="kartu">
+          <div>🟡 Menunggu</div>
+          <div class="angka" id="menunggu">0</div>
+        </div>
+
+        <div class="kartu">
+          <div>🟢 Dikonfirmasi</div>
+          <div class="angka" id="konfirmasi">0</div>
+        </div>
+
+        <div class="kartu">
+          <div>🔵 Selesai</div>
+          <div class="angka" id="selesai">0</div>
+        </div>
+
+      </div>
+
+      <div class="kartu">
+        <h3>Kelola Pesanan</h3>
+        <p>Buka halaman admin untuk melihat detail pesanan dan mengubah status.</p>
+
+        <button onclick="location.href='admin.html'">
+          📋 Buka Daftar Pesanan
+        </button>
+      </div>
+
+      <div class="kartu">
+        <h3>Admin</h3>
+        <p id="emailAdmin">Admin login</p>
+
+        <button class="keluar" onclick="keluar()">
+          Keluar
+        </button>
+      </div>
+
+    </div>
+
+  </main>
+
+  <script>
+    // PENTING:
+    // Salin konfigurasi Firebase yang sama dari admin.html
+    // ke dalam objek di bawah ini.
+
+    const firebaseConfig = {
+    apiKey: "AIzaSyB4y28SQw02BWQWGDIeqan7H-gEGUVOwkw",
+    authDomain: "kelincigo-465eb.firebaseapp.com",
+    projectId: "kelincigo-465eb",
+    storageBucket: "kelincigo-465eb.firebasestorage.app",
+    messagingSenderId: "214017970412",
+    appId: "1:214017970412:web:7db5858a5e92dbe90c15c9"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+
+    const auth = firebase.auth();
+    const db = firebase.firestore();
+    
+    auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL)
+  .then(function() {
+    console.log("Sesi login menggunakan LOCAL");
+  })
+  .catch(function(error) {
+    console.log("Gagal mengatur sesi:", error.message);
+  });
+
+    auth.onAuthStateChanged(function(user) {
+
+      if (!user) {
+        alert("Sesi login tidak ditemukan");
+        location.href = "admin.html";
+        return;
+      }
+
+      document.getElementById("emailAdmin").textContent =
+        user.email || "Admin";
+
+      document.getElementById("loading").textContent =
+        "Memuat ringkasan pesanan...";
+
+      db.collection("orders")
+        .get()
+        .then(function(snapshot) {
+
+          let total = 0;
+          let menunggu = 0;
+          let konfirmasi = 0;
+          let selesai = 0;
+
+          snapshot.forEach(function(doc) {
+            const data = doc.data();
+            const status = data.status || "Menunggu konfirmasi";
+
+            total++;
+
+            if (status === "Menunggu konfirmasi") {
+              menunggu++;
+            }
+
+            if (status === "Dikonfirmasi") {
+              konfirmasi++;
+            }
+
+            if (status === "Selesai") {
+              selesai++;
+            }
+          });
+
+          document.getElementById("total").textContent = total;
+          document.getElementById("menunggu").textContent = menunggu;
+          document.getElementById("konfirmasi").textContent = konfirmasi;
+          document.getElementById("selesai").textContent = selesai;
+
+          document.getElementById("loading").style.display = "none";
+          document.getElementById("dashboard").style.display = "block";
+
+        })
+        .catch(function(error) {
+          document.getElementById("loading").textContent =
+            "Gagal memuat: " + error.message;
+        });
+
+    });
+
+    function keluar() {
+  auth.signOut()
+    .then(function() {
+      location.href = "admin.html";
+    })
+    .catch(function(error) {
+      alert("Gagal logout: " + error.message);
+    });
+ }
+    
+  </script>
+
+</body>
+</html>

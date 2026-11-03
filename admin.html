@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin KelinciGo</title>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f1f8f2;
+      margin: 0;
+      padding: 20px;
+    }
+
+    .login-box {
+      max-width: 400px;
+      margin: 60px auto;
+      padding: 25px;
+      background: white;
+      border-radius: 20px;
+      box-shadow: 0 5px 20px #0001;
+    }
+
+    h2 {
+      text-align: center;
+      color: #247a45;
+    }
+
+    input, button {
+      width: 100%;
+      box-sizing: border-box;
+      padding: 14px;
+      margin-top: 12px;
+      border-radius: 12px;
+      border: 1px solid #ddd;
+      font-size: 16px;
+    }
+
+    button {
+      background: #247a45;
+      color: white;
+      border: none;
+      font-weight: bold;
+    }
+
+    #pesan {
+      text-align: center;
+      color: #c0392b;
+      margin-top: 12px;
+    }
+  </style>
+</head>
+
+<body>
+<div id="formLogin" class="login-box">
+  <h2>🐰 KelinciGo Admin</h2>
+  <p style="text-align:center">Login untuk mengelola pesanan</p>
+
+  <input type="email" id="email" placeholder="Email admin">
+
+  <input type="password" id="password" placeholder="Password admin">
+
+  <button onclick="loginAdmin()">Login</button>
+
+  <p id="pesan"></p>
+</div>
+
+<div id="daftarPesanan" style="display:none">
+  <h2>📋 Daftar Pesanan</h2>
+
+  <button onclick="location.href='dashboard.html'">
+    🏠 Kembali ke Dashboard
+  </button>
+
+  <button onclick="muatPesanan()">
+    🔄 Muat Ulang Pesanan
+  </button>
+
+  <div id="pesanan"></div>
+  <div id="halamanDetail" style="display:none">
+  <h2>📋 Detail Pesanan</h2>
+
+  <div id="isiDetail"></div>
+
+  <button onclick="tutupDetail()">
+    ← Kembali ke Daftar Pesanan
+  </button>
+</div>
+</div>
+
+
+  </div>
+
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+  
+  <script>
+    const firebaseConfig = {
+    apiKey: "AIzaSyB4y28SQw02BWQWGDIeqan7H-gEGUVOwkw",
+    authDomain: "kelincigo-465eb.firebaseapp.com",
+    projectId: "kelincigo-465eb",
+    storageBucket: "kelincigo-465eb.firebasestorage.app",
+    messagingSenderId: "214017970412",
+    appId: "1:214017970412:web:7db5858a5e92dbe90c15c9"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+
+    const auth = firebase.auth();
+    const db = firebase.firestore();
+
+    auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL)
+  .then(function() {
+    console.log("Login tersimpan");
+  })
+  .catch(function(error) {
+    console.log("Gagal menyimpan login:", error.message);
+  });
+
+auth.onAuthStateChanged(function(user) {
+  const formLogin = document.getElementById("formLogin");
+  const daftar = document.getElementById("daftarPesanan");
+  const pesanan = document.getElementById("pesanan");
+
+  if (user) {
+    formLogin.style.display = "none";
+    daftar.style.display = "block";
+    muatPesanan();
+  } else {
+    formLogin.style.display = "block";
+    daftar.style.display = "none";
+    pesanan.innerHTML = "";
+  }
+});
+    
+function loginAdmin() {
+  const email = document.getElementById("email").value.trim();
+  const password = document.getElementById("password").value;
+  const pesan = document.getElementById("pesan");
+
+  pesan.textContent = "Memproses login...";
+
+  auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL)
+    .then(function() {
+      return auth.signInWithEmailAndPassword(email, password);
+    })
+    .then(function() {
+      pesan.style.color = "green";
+      pesan.textContent = "Login berhasil!";
+    })
+    .catch(function(error) {
+      pesan.style.color = "red";
+      pesan.textContent = error.message;
+    });
+}
+
+function muatPesanan() {
+  const tempat = document.getElementById("pesanan");
+  tempat.innerHTML = "Memuat pesanan...";
+
+  db.collection("orders")
+    .orderBy("dibuatPada", "desc")
+    .get()
+    .then((snapshot) => {
+      tempat.innerHTML = "";
+
+      if (snapshot.empty) {
+        tempat.innerHTML = "<p>Belum ada pesanan.</p>";
+        return;
+      }
+
+      snapshot.forEach((doc) => {
+        const data = doc.data();
+
+        const kartu = document.createElement("div");
+        kartu.style.cssText =
+          "background:white;padding:15px;margin:12px 0;border-radius:15px;box-shadow:0 3px 10px #0001";
+
+        const judul = document.createElement("h3");
+        judul.textContent = data.nama || "-";
+        kartu.appendChild(judul);
+
+        const detail = document.createElement("div");
+
+        [
+          "📱 WhatsApp: " + (data.whatsapp || "-"),
+          "📍 Jemput: " + (data.jemput || "-"),
+          "🏁 Tujuan: " + (data.tujuan || "-"),
+          "📅 Tanggal: " + (data.tanggal || "-"),
+          "🕒 Jam: " + (data.jam || "-"),
+          "👥 Penumpang: " + (data.penumpang || "-")
+        ].forEach((teks) => {
+          const p = document.createElement("p");
+          p.textContent = teks;
+          detail.appendChild(p);
+        });
+
+        kartu.appendChild(detail);
+        
+const tombolDetail = document.createElement("button");
+tombolDetail.textContent = "🔍 Detail Pesanan";
+tombolDetail.style.cssText =
+  "width:100%;padding:12px;background:#0f766e;color:white;border:0;border-radius:10px;margin-top:10px;font-weight:bold";
+
+
+tombolDetail.onclick = function() {
+  tampilDetail(data);
+};
+
+kartu.appendChild(tombolDetail);
+
+
+        const label = document.createElement("label");
+        label.textContent = "Status pesanan:";
+        label.style.cssText = "display:block;margin-top:12px;font-weight:bold";
+
+        const pilih = document.createElement("select");
+        pilih.style.cssText =
+          "width:100%;padding:12px;margin-top:8px;border-radius:10px;border:1px solid #ccc";
+
+        const daftarStatus = [
+          "Menunggu konfirmasi",
+          "Dikonfirmasi",
+          "Selesai",
+          "Dibatalkan"
+        ];
+
+        daftarStatus.forEach((status) => {
+          const opsi = document.createElement("option");
+          opsi.value = status;
+          opsi.textContent = status;
+          pilih.appendChild(opsi);
+        });
+
+        pilih.value = daftarStatus.includes(data.status)
+          ? data.status
+          : "Menunggu konfirmasi";
+
+        const tombol = document.createElement("button");
+        tombol.textContent = "Simpan Status";
+        tombol.style.cssText =
+          "width:100%;padding:12px;background:#2563eb;color:white;border:0;border-radius:10px;margin-top:10px;font-weight:bold";
+
+        tombol.onclick = function() {
+          const statusBaru = pilih.value;
+
+          tombol.disabled = true;
+          tombol.textContent = "Menyimpan...";
+
+          db.collection("orders").doc(doc.id)
+            .update({
+              status: statusBaru
+            })
+            .then(() => {
+              alert("Status berhasil diperbarui!");
+              muatPesanan();
+            })
+            .catch((error) => {
+              alert("Gagal menyimpan status: " + error.message);
+              tombol.disabled = false;
+              tombol.textContent = "Simpan Status";
+            });
+        };
+
+        kartu.appendChild(label);
+        kartu.appendChild(pilih);
+        kartu.appendChild(tombol);
+
+        tempat.appendChild(kartu);
+      });
+    })
+    .catch((error) => {
+      tempat.innerHTML =
+        "Gagal memuat pesanan: " + error.message;
+    });
+  }
+    
+function tampilDetail(data) {
+  const daftar = document.getElementById("daftarPesanan");
+  const halaman = document.getElementById("halamanDetail");
+  const isi = document.getElementById("isiDetail");
+
+  isi.innerHTML = "";
+
+  const dataDetail = [
+    ["Nama Pelanggan", data.nama],
+    ["WhatsApp", data.whatsapp],
+    ["Lokasi Jemput", data.jemput],
+    ["Tujuan", data.tujuan],
+    ["Tanggal", data.tanggal],
+    ["Jam", data.jam],
+    ["Jumlah Penumpang", data.penumpang],
+    ["Status", data.status || "Menunggu konfirmasi"]
+  ];
+
+  dataDetail.forEach(function(item) {
+    const kartu = document.createElement("div");
+    kartu.style.cssText =
+      "background:white;padding:12px;margin:10px 0;border-radius:12px";
+
+    const judul = document.createElement("strong");
+    judul.textContent = item[0];
+
+    const nilai = document.createElement("p");
+    nilai.textContent = item[1] || "-";
+
+    kartu.appendChild(judul);
+    kartu.appendChild(nilai);
+    isi.appendChild(kartu);
+  });
+
+  daftar.style.display = "none";
+  halaman.style.display = "block";
+}
+
+function tutupDetail() {
+  document.getElementById("halamanDetail").style.display = "none";
+  document.getElementById("daftarPesanan").style.display = "block";
+}
+
+      </script>
+
+</body>
+</html>
