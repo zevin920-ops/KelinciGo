@@ -167,3 +167,19 @@ footer {
 .booking-form .primary-btn {
   margin-top: 10px;
 }
+
+.secondary-btn {
+  display: block;
+  width: 100%;
+  padding: 16px;
+  margin-top: 12px;
+  border-radius: 14px;
+  border: 1px solid #168747;
+  background: white;
+  color: #168747;
+  font-size: 16px;
+  font-weight: bold;
+  text-align: center;
+  text-decoration: none;
+  box-sizing: border-box;
+}
