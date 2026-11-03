@@ -55,6 +55,7 @@
   Pesan Sekarang →
 </button>
 
+
 <div id="formPesanan" class="booking-form">
   <h2>Form Pemesanan</h2>
 
@@ -77,10 +78,28 @@
   <input id="jam"
     type="time">
 
+  <label for="jumlahKereta">
+    Jumlah Kereta
+  </label>
+
+  <input id="jumlahKereta"
+    type="number"
+    min="1"
+    max="50"
+    value="1"
+    oninput="hitungKapasitas()">
+
+  <div class="kapasitas-info">
+    <p>Kapasitas per kereta: <strong>24 penumpang</strong></p>
+    <p>Total kapasitas:
+      <strong id="totalKapasitas">24 penumpang</strong>
+    </p>
+  </div>
+
   <input id="penumpang"
     type="number"
     min="1"
-    max="30"
+    max="1200"
     placeholder="Jumlah penumpang">
 
   <button class="primary-btn"
@@ -88,6 +107,9 @@
     Kirim Pesanan
   </button>
 </div>
+
+    <div id="hasilPesanan"></div>
+      
     </section>
   </main>
 
