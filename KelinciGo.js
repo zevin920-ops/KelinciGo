@@ -1,89 +1,128 @@
+
 /* =========================================
-   KELINCI GO - JAVASCRIPT
-   Kapasitas setiap kereta: 24 penumpang
-   Maksimal kereta: 50
+   KELINCI GO
+   Kapasitas: 24 penumpang per kereta
+   Maksimal: 50 kereta
 ========================================= */
 
 const KAPASITAS_KERETA = 24;
 const MAKS_KERETA = 50;
 
+
 /* =========================================
-   HITUNG TOTAL KAPASITAS
+   BUKA FORM PESANAN
+========================================= */
+
+function bukaPesanan() {
+  const form = document.getElementById("formPesanan");
+
+  if (!form) {
+    alert("Form pemesanan tidak ditemukan.");
+    return;
+  }
+
+  form.style.display = "block";
+
+  form.scrollIntoView({
+    behavior: "smooth",
+    block: "start"
+  });
+
+  hitungKapasitas();
+}
+
+
+/* =========================================
+   JUMLAH KERETA
+========================================= */
+
+function ubahKereta(perubahan) {
+  const jumlahElement =
+    document.getElementById("jumlahKereta");
+
+  if (!jumlahElement) return;
+
+  let jumlah =
+    parseInt(jumlahElement.textContent) || 1;
+
+  jumlah += perubahan;
+
+  if (jumlah < 1) jumlah = 1;
+
+  if (jumlah > MAKS_KERETA) {
+    jumlah = MAKS_KERETA;
+  }
+
+  jumlahElement.textContent = jumlah;
+
+  hitungKapasitas();
+}
+
+
+/* =========================================
+   HITUNG KAPASITAS
 ========================================= */
 
 function hitungKapasitas() {
-  const inputKereta = document.getElementById("jumlahKereta");
-  const outputKapasitas = document.getElementById("totalKapasitas");
+  const jumlahElement =
+    document.getElementById("jumlahKereta");
 
-  if (!inputKereta || !outputKapasitas) {
+  const kapasitasElement =
+    document.getElementById("totalKapasitas");
+
+  if (!jumlahElement || !kapasitasElement) {
     return;
   }
 
-  const jumlahKereta = Number(inputKereta.value);
+  const jumlah =
+    parseInt(jumlahElement.textContent) || 1;
 
-  if (
-    !Number.isInteger(jumlahKereta) ||
-    jumlahKereta < 1 ||
-    jumlahKereta > MAKS_KERETA
-  ) {
-    outputKapasitas.textContent = "Jumlah kereta tidak valid";
-    return;
-  }
+  const total =
+    jumlah * KAPASITAS_KERETA;
 
-  const totalKapasitas = jumlahKereta * KAPASITAS_KERETA;
-
-  outputKapasitas.textContent =
-    totalKapasitas + " penumpang";
+  kapasitasElement.textContent =
+    total + " penumpang";
 }
+
 
 /* =========================================
    SALIN KODE PESANAN
 ========================================= */
 
-function salinKodePesanan(kode) {
+async function salinKodePesanan(kode) {
   if (!kode) {
     alert("Kode pesanan tidak ditemukan.");
     return;
   }
 
-  if (navigator.clipboard && window.isSecureContext) {
-    navigator.clipboard.writeText(kode)
-      .then(() => {
-        alert("Kode pesanan berhasil disalin!");
-      })
-      .catch(() => {
-        salinKodeManual(kode);
-      });
-  } else {
-    salinKodeManual(kode);
-  }
-}
-
-function salinKodeManual(kode) {
-  const textarea = document.createElement("textarea");
-
-  textarea.value = kode;
-  textarea.style.position = "fixed";
-  textarea.style.opacity = "0";
-
-  document.body.appendChild(textarea);
-
-  textarea.select();
-
   try {
-    const berhasil = document.execCommand("copy");
+    await navigator.clipboard.writeText(kode);
+
+    alert("Kode pesanan berhasil disalin!");
+
+  } catch (error) {
+    const textarea =
+      document.createElement("textarea");
+
+    textarea.value = kode;
+
+    document.body.appendChild(textarea);
+
+    textarea.select();
+
+    const berhasil =
+      document.execCommand("copy");
+
+    textarea.remove();
 
     if (berhasil) {
       alert("Kode pesanan berhasil disalin!");
     } else {
-      alert("Silakan salin kode secara manual:\n" + kode);
+      alert("Kode pesanan:\n" + kode);
     }
-  } catch (error) {
-    alert("Silakan salin kode secara manual:\n" + kode);
   }
-
-  textarea.remove();
 }
+
 
 /* =========================================
    KIRIM PESANAN
@@ -91,30 +130,36 @@ function salinKodeManual(kode) {
 
 async function kirimPesanan() {
 
-  /* Ambil data form */
+  const nama =
+    document.getElementById("nama")?.value.trim();
 
-  const nama = document.getElementById("nama").value.trim();
+  const whatsapp =
+    document.getElementById("whatsapp")?.value.trim();
 
-  const whatsapp = document.getElementById("whatsapp").value.trim();
+  const jemput =
+    document.getElementById("jemput")?.value.trim();
 
-  const jemput = document.getElementById("jemput").value.trim();
+  const tujuan =
+    document.getElementById("tujuan")?.value.trim();
 
-  const tujuan = document.getElementById("tujuan").value.trim();
+  const tanggal =
+    document.getElementById("tanggal")?.value;
 
-  const tanggal = document.getElementById("tanggal").value;
+  const jam =
+    document.getElementById("jam")?.value;
 
-  const jam = document.getElementById("jam").value;
+  const jumlahKereta =
+    parseInt(
+      document.getElementById("jumlahKereta")?.textContent
+    );
 
-  const jumlahKereta = Number(
-    document.getElementById("jumlahKereta").value
-  );
-
-  const penumpang = Number(
-    document.getElementById("penumpang").value
-  );
+  const penumpang =
+    Number(
+      document.getElementById("penumpang")?.value
+    );
 
 
-  /* Validasi data kosong */
+  /* Validasi form */
 
   if (
     !nama ||
@@ -123,15 +168,14 @@ async function kirimPesanan() {
     !tujuan ||
     !tanggal ||
     !jam ||
-    !document.getElementById("jumlahKereta").value ||
-    !document.getElementById("penumpang").value
+    !document.getElementById("penumpang")?.value
   ) {
     alert("Mohon lengkapi semua data!");
     return;
   }
 
 
-  /* Validasi jumlah kereta */
+  /* Validasi kereta */
 
   if (
     !Number.isInteger(jumlahKereta) ||
@@ -149,7 +193,7 @@ async function kirimPesanan() {
     jumlahKereta * KAPASITAS_KERETA;
 
 
-  /* Validasi jumlah penumpang */
+  /* Validasi penumpang */
 
   if (
     !Number.isInteger(penumpang) ||
@@ -157,7 +201,7 @@ async function kirimPesanan() {
     penumpang > totalKapasitas
   ) {
     alert(
-      "Jumlah penumpang harus 1 sampai " +
+      "Jumlah penumpang maksimal " +
       totalKapasitas +
       " orang sesuai kapasitas kereta."
     );
@@ -166,71 +210,18 @@ async function kirimPesanan() {
   }
 
 
-  /* Validasi nama */
-
-  if (nama.length > 100) {
-    alert("Nama maksimal 100 karakter.");
-    return;
-  }
-
-
-  /* Validasi WhatsApp */
+  /* Validasi teks */
 
   if (
+    nama.length > 100 ||
     whatsapp.length < 8 ||
-    whatsapp.length > 20
-  ) {
-    alert("Nomor WhatsApp tidak valid.");
-    return;
-  }
-
-
-  /* Validasi lokasi */
-
-  if (
+    whatsapp.length > 20 ||
     jemput.length > 200 ||
     tujuan.length > 200
   ) {
-    alert("Lokasi maksimal 200 karakter.");
+    alert("Periksa kembali data yang kamu masukkan.");
     return;
   }
-
-
-  /* Status awal */
-
-  const statusAwal = "Menunggu konfirmasi";
-
-
-  /* Data pesanan */
-
-  const dataPesanan = {
-
-    nama: nama,
-
-    whatsapp: whatsapp,
-
-    jemput: jemput,
-
-    tujuan: tujuan,
-
-    tanggal: tanggal,
-
-    jam: jam,
-
-    jumlahKereta: jumlahKereta,
-
-    kapasitasKereta: KAPASITAS_KERETA,
-
-    totalKapasitas: totalKapasitas,
-
-    penumpang: penumpang,
-
-    status: statusAwal,
-
-    dibuatPada:
-      firebase.firestore.FieldValue.serverTimestamp()
-
-  };
 
 
   /* Periksa Firebase */
@@ -240,44 +231,80 @@ async function kirimPesanan() {
     !db ||
     typeof db.collection !== "function"
   ) {
-    alert("Firebase belum terhubung. Periksa konfigurasi Firebase.");
+    alert("Firebase belum terhubung.");
     return;
   }
 
 
   /* Tombol loading */
 
-  const tombol = document.querySelector(
-    '#formPesanan button[onclick="kirimPesanan()"]'
-  );
+  const tombol =
+    document.querySelector(
+      '#formPesanan button[onclick="kirimPesanan()"]'
+    );
 
-  const teksTombol = tombol
-    ? tombol.textContent
-    : "";
+  const teksTombol =
+    tombol?.textContent || "Kirim Pesanan";
 
   if (tombol) {
     tombol.disabled = true;
-    tombol.textContent = "Mengirim pesanan...";
+    tombol.textContent = "Mengirim...";
   }
 
 
   try {
 
-    /* Buat ID pesanan */
+    /* Data pesanan */
 
-    const pesananRef = db.collection("orders").doc();
+    const statusAwal =
+      "Menunggu konfirmasi";
 
-    const kode = pesananRef.id;
+    const dataPesanan = {
+
+      nama: nama,
+
+      whatsapp: whatsapp,
+
+      jemput: jemput,
+
+      tujuan: tujuan,
+
+      tanggal: tanggal,
+
+      jam: jam,
+
+      jumlahKereta: jumlahKereta,
+
+      kapasitasKereta: KAPASITAS_KERETA,
+
+      totalKapasitas: totalKapasitas,
+
+      penumpang: penumpang,
+
+      status: statusAwal,
+
+      dibuatPada:
+        firebase.firestore.FieldValue.serverTimestamp()
+
+    };
 
 
-    /* Referensi tracking */
+    /* Buat kode pesanan */
 
-    const trackingRef = db
-      .collection("tracking")
-      .doc(kode);
+    const pesananRef =
+      db.collection("orders").doc();
+
+    const kode =
+      pesananRef.id;
 
 
-    /* Simpan kedua dokumen secara atomik */
+    /* Tracking */
+
+    const trackingRef =
+      db.collection("tracking").doc(kode);
+
+
+    /* Simpan pesanan */
 
     const batch = db.batch();
 
@@ -292,102 +319,83 @@ async function kirimPesanan() {
 
     /* Tampilkan hasil */
 
-    const hasil = document.getElementById(
-      "hasilPesanan"
-    );
+    const hasil =
+      document.getElementById("hasilPesanan");
 
     if (hasil) {
 
       hasil.innerHTML = `
         <div class="order-code-card">
 
-          <div class="order-code-header">
+          <h3>🐰 Pesanan Berhasil</h3>
 
-            <strong style="color:#168747">
-              🐰 KelinciGo
-            </strong>
+          <p>Kode pesanan:</p>
 
-            <span style="color:#168747;font-size:12px">
-              ● Pesanan berhasil
-            </span>
+          <strong>${kode}</strong>
 
-          </div>
-
-          <p class="order-code-label">
-            KODE PESANAN
+          <p>
+            Jumlah kereta:
+            ${jumlahKereta}
           </p>
 
-          <div class="order-code-number">
-            ${kode}
-          </div>
-
-          <p class="order-code-info">
-            Simpan kode ini untuk mengecek status pesanan.
+          <p>
+            Kapasitas per kereta:
+            24 penumpang
           </p>
 
-          <div class="order-code-info">
+          <p>
+            Total kapasitas:
+            ${totalKapasitas} penumpang
+          </p>
 
-            <p>
-              Jumlah kereta:
-              <strong>${jumlahKereta}</strong>
-            </p>
+          <p>
+            Jumlah penumpang:
+            ${penumpang} orang
+          </p>
 
-            <p>
-              Kapasitas per kereta:
-              <strong>24 penumpang</strong>
-            </p>
-
-            <p>
-              Total kapasitas:
-              <strong>${totalKapasitas} penumpang</strong>
-            </p>
-
-            <p>
-              Jumlah penumpang:
-              <strong>${penumpang} orang</strong>
-            </p>
-
-          </div>
+          <p>
+            Status:
+            ${statusAwal}
+          </p>
 
           <button
+            type="button"
             class="copy-code-btn"
-            onclick="salinKodePesanan('${kode}')">
-
+            id="salinKodeBtn">
             📋 Salin Kode Pesanan
-
           </button>
 
         </div>
       `;
 
+      const salinBtn =
+        document.getElementById("salinKodeBtn");
+
+      if (salinBtn) {
+        salinBtn.onclick = function() {
+          salinKodePesanan(kode);
+        };
+      }
+
       hasil.scrollIntoView({
         behavior: "smooth"
       });
-
     }
-
-
-    /* Notifikasi */
 
     alert("Pesanan berhasil dikirim!");
 
   } catch (error) {
 
-    console.error(
-      "Firebase error:",
-      error
-    );
+    console.error("Firebase error:", error);
 
     alert(
       "Pesanan gagal dikirim.\n" +
-      (error.code || "unknown") +
+      (error.code || "") +
       "\n" +
-      (error.message || "Terjadi kesalahan.")
+      (error.message || "")
     );
 
   } finally {
-
-    /* Aktifkan kembali tombol */
 
     if (tombol) {
       tombol.disabled = false;
@@ -400,36 +408,12 @@ async function kirimPesanan() {
 
 
 /* =========================================
-   HITUNG KAPASITAS SAAT HALAMAN DIBUKA
+   SAAT HALAMAN DIBUKA
 ========================================= */
 
-document.addEventListener("DOMContentLoaded", function () {
-
-  hitungKapasitas();
-
-});
-
-
-const KAPASITAS_KERETA = 24;
-const MAKS_KERETA = 50;
-
-function ubahKereta(perubahan) {
-  const jumlahElement = document.getElementById("jumlahKereta");
-  const kapasitasElement = document.getElementById("totalKapasitas");
-
-  if (!jumlahElement || !kapasitasElement) return;
-
-  let jumlah = parseInt(jumlahElement.textContent) || 1;
-
-  jumlah += perubahan;
-
-  if (jumlah < 1) jumlah = 1;
-  if (jumlah > MAKS_KERETA) jumlah = MAKS_KERETA;
-
-  jumlahElement.textContent = jumlah;
-
-  const total = jumlah * KAPASITAS_KERETA;
-
-  kapasitasElement.textContent =
-    total + " penumpang";
-}
+document.addEventListener(
+  "DOMContentLoaded",
+  function() {
+    hitungKapasitas();
+  }
+);
