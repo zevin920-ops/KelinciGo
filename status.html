@@ -242,10 +242,7 @@
       try {
 
         // Ambil pesanan dari Firestore
-        const doc = await db
-          .collection("orders")
-          .doc(kode)
-          .get();
+        const doc = await db.collection("tracking").doc(kode).get();
 
         if (!doc.exists) {
 
