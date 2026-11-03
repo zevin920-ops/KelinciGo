@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Cek Status Pesanan - KelinciGo</title>
+
+    <link rel="stylesheet" href="kelinciGo.css">
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            background: #f5f8f5;
+            color: #183b27;
+            font-family: Arial, sans-serif;
+        }
+
+        .status-navbar {
+            background: #ffffff;
+            border-bottom: 1px solid #e5eee7;
+            padding: 18px 20px;
+        }
+
+        .navbar-container {
+            max-width: 1100px;
+            margin: auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 15px;
+        }
+
+        .brand {
+            color: #168747;
+            font-size: 22px;
+            font-weight: bold;
+            text-decoration: none;
+        }
+
+        .back-link {
+            color: #168747;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .status-container {
+            width: 100%;
+            max-width: 600px;
+            margin: 55px auto;
+            padding: 20px;
+        }
+
+        .status-heading {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .status-heading .icon {
+            width: 65px;
+            height: 65px;
+            background: #e5f5e9;
+            color: #168747;
+            border-radius: 22px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 18px;
+            font-size: 30px;
+        }
+
+        .status-heading h1 {
+            margin: 0 0 12px;
+            font-size: 28px;
+        }
+
+        .status-heading p {
+            color: #718078;
+            font-size: 14px;
+            line-height: 1.7;
+            margin: 0;
+        }
+
+        .status-card {
+            background: #ffffff;
+            border: 1px solid #e5eee7;
+            border-radius: 24px;
+            padding: 25px;
+            box-shadow: 0 10px 35px rgba(22, 135, 71, 0.07);
+        }
+
+        .form-label {
+            display: block;
+            font-size: 14px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .status-input {
+            width: 100%;
+            padding: 16px;
+            border: 1px solid #dce8df;
+            border-radius: 14px;
+            outline: none;
+            background: #fbfdfb;
+            color: #183b27;
+            font-size: 15px;
+            transition: 0.2s;
+        }
+
+        .status-input:focus {
+            border-color: #168747;
+            box-shadow: 0 0 0 3px rgba(22, 135, 71, 0.1);
+        }
+
+        .check-button {
+            width: 100%;
+            padding: 16px;
+            margin-top: 15px;
+            border: none;
+            border-radius: 14px;
+            background: #168747;
+            color: #ffffff;
+            font-size: 15px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .check-button:hover {
+            background: #116b37;
+        }
+
+        .check-button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .message {
+            display: none;
+            margin-top: 18px;
+            padding: 14px;
+            border-radius: 12px;
+            font-size: 13px;
+            line-height: 1.6;
+            overflow-wrap: anywhere;
+        }
+
+        .message.success {
+            display: block;
+            background: #e9f7ee;
+            color: #176b38;
+        }
+
+        .message.error {
+            display: block;
+            background: #fff0f0;
+            color: #b42318;
+        }
+
+        .result-card {
+            display: none;
+            margin-top: 22px;
+            padding: 22px;
+            border: 1px solid #e5eee7;
+            border-radius: 22px;
+            background: #ffffff;
+            box-shadow: 0 8px 25px rgba(22, 135, 71, 0.06);
+        }
+
+        .result-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .result-icon {
+            width: 45px;
+            height: 45px;
+            border-radius: 15px;
+            background: #e5f5e9;
+            color: #168747;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .result-header h2 {
+            font-size: 18px;
+            margin: 0;
+        }
+
+        .result-label {
+            font-size: 12px;
+            color: #718078;
+            margin-bottom: 8px;
+        }
+
+        .order-number {
+            font-size: 14px;
+            font-weight: bold;
+            color: #183b27;
+            overflow-wrap: anywhere;
+            line-height: 1.6;
+        }
+
+        .status-divider {
+            height: 1px;
+            background: #e5eee7;
+            margin: 20px 0;
+        }
+
+        .status-label {
+            color: #718078;
+            font-size: 12px;
+            margin-bottom: 10px;
+        }
+
+        .status-value {
+            display: inline-block;
+            padding: 10px 15px;
+            border-radius: 12px;
+            background: #fff5dc;
+            color: #946200;
+            font-size: 14px;
+            font-weight: bold;
+            line-height: 1.5;
+            overflow-wrap: anywhere;
+        }
+
+        .result-info {
+            color: #718078;
+            font-size: 13px;
+            line-height: 1.7;
+            margin-top: 18px;
+        }
+
+        .status-footer {
+            text-align: center;
+            margin-top: 30px;
+            color: #718078;
+            font-size: 12px;
+            line-height: 1.7;
+        }
+
+        @media (max-width: 480px) {
+            .status-container {
+                margin: 30px auto;
+                padding: 15px;
+            }
+
+            .status-heading h1 {
+                font-size: 24px;
+            }
+
+            .status-card {
+                padding: 20px;
+            }
+
+            .result-card {
+                padding: 18px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav class="status-navbar">
+        <div class="navbar-container">
+            <a href="index.html" class="brand">🐰 KelinciGo</a>
+            <a href="index.html" class="back-link">← Kembali</a>
+        </div>
+    </nav>
+
+    <main class="status-container">
+
+        <div class="status-heading">
+            <div class="icon">📦</div>
+
+            <h1>Cek Status Pesanan</h1>
+
+            <p>
+                Masukkan kode pesanan yang kamu dapatkan
+                setelah melakukan pemesanan.
+            </p>
+        </div>
+
+        <section class="status-card">
+
+            <label for="kodePesanan" class="form-label">
+                Kode Pesanan
+            </label>
+
+            <input
+                type="text"
+                id="kodePesanan"
+                class="status-input"
+                placeholder="Masukkan kode pesanan"
+                autocomplete="off"
+                spellcheck="false"
+            >
+
+            <button
+                type="button"
+                id="tombolCek"
+                class="check-button"
+                onclick="cekStatus()"
+            >
+                Cek Status Pesanan
+            </button>
+
+            <div id="pesanStatus" class="message"></div>
+
+        </section>
+
+        <section id="hasilStatus" class="result-card">
+
+            <div class="result-header">
+                <div class="result-icon">✓</div>
+
+                <h2>Informasi Pesanan</h2>
+            </div>
+
+            <div class="result-label">
+                Kode Pesanan
+            </div>
+
+            <div id="nomorPesanan" class="order-number"></div>
+
+            <div class="status-divider"></div>
+
+            <div class="status-label">
+                Status Pesanan
+            </div>
+
+            <div id="statusPesanan" class="status-value">
+                Menunggu konfirmasi
+            </div>
+
+            <p class="result-info">
+                Status akan berubah setelah pesanan diperbarui
+                oleh pihak KelinciGo.
+            </p>
+
+        </section>
+
+        <div class="status-footer">
+            KelinciGo<br>
+            Layanan perjalanan kereta yang nyaman 🐰
+        </div>
+
+    </main>
+
+    <!-- Firebase -->
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+
+    <script>
+        // Firebase Configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyB4y28SQw02BWQWGDIeqan7H-gEGUVOwkw",
+            authDomain: "kelincigo-465eb.firebaseapp.com",
+            projectId: "kelincigo-465eb",
+            storageBucket: "kelincigo-465eb.firebasestorage.app",
+            messagingSenderId: "214017970412",
+            appId: "1:214017970412:web:7db5858a5e92dbe90c15c9"
+        };
+
+        // Initialize Firebase
+        if (!firebase.apps.length) {
+            firebase.initializeApp(firebaseConfig);
+        }
+
+        const db = firebase.firestore();
+
+        // Cek status pesanan
+        async function cekStatus() {
+            const inputKode = document.getElementById("kodePesanan");
+            const tombol = document.getElementById("tombolCek");
+            const pesan = document.getElementById("pesanStatus");
+            const hasil = document.getElementById("hasilStatus");
+
+            const kode = inputKode.value.trim();
+
+            // Reset tampilan
+            pesan.className = "message";
+            pesan.textContent = "";
+            hasil.style.display = "none";
+
+            // Validasi kode
+            if (!kode) {
+                pesan.className = "message error";
+                pesan.textContent = "Masukkan kode pesanan terlebih dahulu.";
+                inputKode.focus();
+                return;
+            }
+
+            // Loading
+            tombol.disabled = true;
+            tombol.textContent = "Memeriksa...";
+
+            try {
+                // Baca hanya koleksi tracking
+                const dokumen = await db
+                    .collection("tracking")
+                    .doc(kode)
+                    .get();
+
+                if (!dokumen.exists) {
+                    pesan.className = "message error";
+                    pesan.textContent =
+                        "Pesanan tidak ditemukan. Periksa kembali kode pesanan kamu.";
+                    return;
+                }
+
+                const data = dokumen.data();
+                const status = data.status || "Menunggu konfirmasi";
+
+                // Tampilkan kode pesanan
+                document.getElementById("nomorPesanan").textContent = kode;
+
+                // Tampilkan status
+                document.getElementById("statusPesanan").textContent = status;
+
+                // Tampilkan hasil
+                hasil.style.display = "block";
+
+                pesan.className = "message success";
+                pesan.textContent = "Pesanan berhasil ditemukan.";
+
+            } catch (error) {
+                console.error("Gagal mengecek status:", error);
+
+                pesan.className = "message error";
+
+                if (error.code === "permission-denied") {
+                    pesan.textContent =
+                        "Akses ditolak. Periksa Firestore Rules pada koleksi tracking.";
+                } else {
+                    pesan.textContent =
+                        "Terjadi kesalahan saat mengecek pesanan. Coba lagi beberapa saat.";
+                }
+
+            } finally {
+                tombol.disabled = false;
+                tombol.textContent = "Cek Status Pesanan";
+            }
+        }
+
+        // Enter untuk mengecek status
+        document
+            .getElementById("kodePesanan")
+            .addEventListener("keydown", function(event) {
+                if (event.key === "Enter") {
+                    cekStatus();
+                }
+            });
+    </script>
+
+</body>
+</html>
