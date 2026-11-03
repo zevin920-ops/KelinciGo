@@ -322,17 +322,27 @@
           </div>
         `;
 
-      } catch (error) {
+      
+} catch (error) {
 
-        console.error(error);
+  console.error("Error cek pesanan:", error);
 
-        hasil.innerHTML = `
-          <p class="status-error">
-            Gagal memeriksa pesanan.
-            Silakan coba lagi.
-          </p>
-        `;
+  hasil.innerHTML = `
+    <p class="status-error">
+      Gagal memeriksa pesanan.
+    </p>
 
+    <p>
+      Kode error:
+      ${error.code || "Tidak diketahui"}
+    </p>
+
+    <p>
+      Pesan:
+      ${error.message || "Tidak ada pesan error"}
+    </p>
+  `;
+        
       } finally {
 
         tombol.disabled = false;
