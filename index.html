@@ -82,13 +82,24 @@
     Jumlah Kereta
   </label>
 
-  <input id="jumlahKereta"
-    type="number"
-    min="1"
-    max="50"
-    value="1"
-    oninput="hitungKapasitas()">
+  
+<div class="jumlah-kereta">
+  <label>Jumlah Kereta</label>
 
+  <div class="pilih-kereta">
+    <button type="button" onclick="ubahKereta(-1)">−</button>
+
+    <span id="jumlahKereta">1</span>
+
+    <button type="button" onclick="ubahKereta(1)">+</button>
+  </div>
+
+  <p>
+    Kapasitas:
+    <strong id="totalKapasitas">24 penumpang</strong>
+  </p>
+</div>
+  
   <div class="kapasitas-info">
     <p>Kapasitas per kereta: <strong>24 penumpang</strong></p>
     <p>Total kapasitas:
