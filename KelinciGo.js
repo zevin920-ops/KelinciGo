@@ -309,9 +309,15 @@ async function kirimPesanan() {
     const batch = db.batch();
 
     batch.set(pesananRef, dataPesanan);
-
-     batch.set(trackingRef, {
-  status: statusAwal
+     
+batch.set(trackingRef, {
+  status: statusAwal,
+  nama: nama,
+  tujuan: tujuan,
+  tanggal: tanggal,
+  jam: jam,
+  jumlahKereta: jumlahKereta,
+  penumpang: penumpang
 });
 
     await batch.commit();
