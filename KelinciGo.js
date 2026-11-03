@@ -310,8 +310,7 @@ async function kirimPesanan() {
 
     batch.set(pesananRef, dataPesanan);
 
-    
-batch.set(trackingRef, {
+     batch.set(trackingRef, {
   nama: dataPesanan.nama,
   whatsapp: dataPesanan.whatsapp,
   jemput: dataPesanan.jemput,
