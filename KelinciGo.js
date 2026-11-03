@@ -408,3 +408,28 @@ document.addEventListener("DOMContentLoaded", function () {
   hitungKapasitas();
 
 });
+
+
+const KAPASITAS_KERETA = 24;
+const MAKS_KERETA = 50;
+
+function ubahKereta(perubahan) {
+  const jumlahElement = document.getElementById("jumlahKereta");
+  const kapasitasElement = document.getElementById("totalKapasitas");
+
+  if (!jumlahElement || !kapasitasElement) return;
+
+  let jumlah = parseInt(jumlahElement.textContent) || 1;
+
+  jumlah += perubahan;
+
+  if (jumlah < 1) jumlah = 1;
+  if (jumlah > MAKS_KERETA) jumlah = MAKS_KERETA;
+
+  jumlahElement.textContent = jumlah;
+
+  const total = jumlah * KAPASITAS_KERETA;
+
+  kapasitasElement.textContent =
+    total + " penumpang";
+}
