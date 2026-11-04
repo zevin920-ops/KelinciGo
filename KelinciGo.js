@@ -305,6 +305,7 @@ async function kirimPesanan() {
 
 
 
+
 /* Simpan pesanan dengan nomor berurutan */
 
 let kode;
@@ -316,9 +317,12 @@ const counterRef = db
 await db.runTransaction(async (transaction) => {
   const counterSnap = await transaction.get(counterRef);
 
-  const nomorBerikutnya = counterSnap.exists
-    ? counterSnap.data().lastNumber + 1
-    : 1;
+  if (!counterSnap.exists) {
+    throw new Error("Counter nomor pesanan belum dibuat.");
+  }
+
+  const nomorBerikutnya =
+    counterSnap.data().lastNumber + 1;
 
   kode = `KG-${nomorBerikutnya}`;
 
@@ -330,13 +334,11 @@ await db.runTransaction(async (transaction) => {
     .collection("tracking")
     .doc(kode);
 
-  transaction.set(counterRef, {
+  transaction.update(counterRef, {
     lastNumber: nomorBerikutnya
   });
 
-  transaction.set(pesananRef, {
-    ...dataPesanan
-  });
+  transaction.set(pesananRef, dataPesanan);
 
   transaction.set(trackingRef, {
     status: statusAwal,
@@ -349,9 +351,8 @@ await db.runTransaction(async (transaction) => {
   });
 });
 
-/* kode berisi KG-1, KG-2, dst */
-
-
+/* kode sekarang KG-1, KG-2, dan seterusnya */
+     
 
     /* Tampilkan hasil */
 
