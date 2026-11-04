@@ -304,23 +304,53 @@ async function kirimPesanan() {
       db.collection("tracking").doc(kode);
 
 
-    /* Simpan pesanan */
 
-    const batch = db.batch();
+/* Simpan pesanan dengan nomor berurutan */
 
-    batch.set(pesananRef, dataPesanan);
-     
-batch.set(trackingRef, {
-  status: statusAwal,
-  nama: nama,
-  tujuan: tujuan,
-  tanggal: tanggal,
-  jam: jam,
-  jumlahKereta: jumlahKereta,
-  penumpang: penumpang
+let kode;
+
+const counterRef = db
+  .collection("counters")
+  .doc("nomorPesanan");
+
+await db.runTransaction(async (transaction) => {
+  const counterSnap = await transaction.get(counterRef);
+
+  const nomorBerikutnya = counterSnap.exists
+    ? counterSnap.data().lastNumber + 1
+    : 1;
+
+  kode = `KG-${nomorBerikutnya}`;
+
+  const pesananRef = db
+    .collection("orders")
+    .doc(kode);
+
+  const trackingRef = db
+    .collection("tracking")
+    .doc(kode);
+
+  transaction.set(counterRef, {
+    lastNumber: nomorBerikutnya
+  });
+
+  transaction.set(pesananRef, {
+    ...dataPesanan
+  });
+
+  transaction.set(trackingRef, {
+    status: statusAwal,
+    nama: nama,
+    tujuan: tujuan,
+    tanggal: tanggal,
+    jam: jam,
+    jumlahKereta: jumlahKereta,
+    penumpang: penumpang
+  });
 });
 
-    await batch.commit();
+/* kode berisi KG-1, KG-2, dst */
+
 
 
     /* Tampilkan hasil */
